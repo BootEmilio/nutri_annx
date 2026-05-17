@@ -1,17 +1,16 @@
 import { Pool } from "pg";
+import "dotenv/config";
+
 
 export const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "annx_db",
-  password: "1601",
-  port: 5432
-});
-
-pool.query("SELECT NOW()", (err, res) => {
-  if (err) {
-    console.error("Error conectando:", err);
-  } else {
-    console.log("Conectado a PostgreSQL:", res.rows);
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
   }
 });
+
+
+pool.query("SELECT NOW()")
+  .then(() => console.log("✅ Conectado a DB de Render"))
+  .catch(() => console.log("❌ Error en conexión"));
+

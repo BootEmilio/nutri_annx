@@ -27,3 +27,28 @@ export const getAlimentoById = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al buscar alimento" });
   }
 };
+
+
+export const getAlimentosByGrupo = async (req: Request, res: Response) => {
+  const { grupo_id } = req.params;
+
+  try {
+    const result = await pool.query(
+      "SELECT * FROM alimentos WHERE grupo_id = $1",
+      [grupo_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        mensaje: "No hay alimentos para este grupo"
+      });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Error al filtrar alimentos por grupo"
+    });
+  }
+};
